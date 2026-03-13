@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Capsule AI Orchestration Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f6c446",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221d10",
+                        "charcoal": "#2b2b2b",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "1.75rem",
+                        "3xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+        .neumorphic-inset {
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.8);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 px-6 py-4 flex items-center justify-between bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-2 rounded-xl text-charcoal">
+<span class="material-symbols-outlined block">auto_awesome</span>
+</div>
+<h2 class="text-charcoal dark:text-white text-xl font-bold tracking-tight">Capsule</h2>
+</div>
+<nav class="hidden lg:flex items-center bg-white/50 dark:bg-white/5 p-1 rounded-full border border-primary/10">
+<a class="px-5 py-2 text-sm font-semibold rounded-full bg-charcoal text-white" href="#">Dashboard</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Agents</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Modules</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Tools</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Memory</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Models</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Users</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Permissions</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Logs</a>
+<a class="px-5 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-3">
+<button class="p-2.5 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-primary/20 transition-all text-slate-700 dark:text-slate-200">
+<span class="material-symbols-outlined text-[22px]">settings</span>
+</button>
+<button class="p-2.5 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-primary/20 transition-all text-slate-700 dark:text-slate-200 relative">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-white dark:border-background-dark"></span>
+</button>
+<div class="w-10 h-10 rounded-xl bg-primary/20 border-2 border-primary/40 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile avatar of Neelaksh" src="assets/neelaksh_avatar.jpg"/>
+</div>
+</div>
+</header>
+<main class="flex-1 p-6 lg:p-10 max-w-[1600px] mx-auto w-full space-y-8">
+<!-- Hero Welcome -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl lg:text-5xl font-black text-charcoal dark:text-white tracking-tight">Welcome back, Neelaksh</h1>
+<p class="text-slate-500 mt-2 font-medium">System overview and orchestration metrics for today.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full md:w-auto">
+<div class="glass-card p-4 rounded-2xl min-w-[140px]">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Agents</p>
+<p class="text-2xl font-black text-charcoal mt-1">12</p>
+</div>
+<div class="glass-card p-4 rounded-2xl min-w-[140px]">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Modules</p>
+<p class="text-2xl font-black text-charcoal mt-1">24</p>
+</div>
+<div class="glass-card p-4 rounded-2xl min-w-[140px]">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Models</p>
+<p class="text-2xl font-black text-charcoal mt-1">8</p>
+</div>
+<div class="glass-card p-4 rounded-2xl min-w-[140px]">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Running</p>
+<p class="text-2xl font-black text-primary mt-1">5</p>
+</div>
+</div>
+</div>
+<!-- 12-Column Grid -->
+<div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-6">
+<!-- 1. Profile Widget -->
+<div class="col-span-1 md:col-span-3 lg:col-span-4 glass-card rounded-3xl p-6 flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-4">
+<div class="absolute inset-0 bg-primary/20 rounded-full animate-pulse"></div>
+<img class="relative w-full h-full rounded-full object-cover border-4 border-white" data-alt="Portrait of Lora Piterson UI Designer" src="assets/lora_avatar.jpg"/>
+</div>
+<h3 class="text-2xl font-bold text-charcoal">Lora Piterson</h3>
+<p class="text-slate-500 font-medium">UX/UI Designer</p>
+<div class="mt-6 w-full bg-background-light dark:bg-charcoal/30 rounded-2xl p-4 neumorphic-inset">
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm font-bold text-slate-600">Compute Usage</span>
+<span class="text-sm font-black text-primary">84%</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[84%] rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- 2. System Progress Widget -->
+<div class="col-span-1 md:col-span-3 lg:col-span-5 glass-card rounded-3xl p-6 flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h4 class="text-lg font-bold text-charcoal">System Activity</h4>
+<p class="text-sm text-slate-500 font-medium">6.1h Work Time this week</p>
+</div>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold tracking-wide">MON-SUN</span>
+</div>
+<div class="flex-1 flex items-end justify-between gap-3 px-2">
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-full bg-primary/10 rounded-t-lg" style="height: 45%;"></div>
+<span class="text-[10px] font-bold text-slate-400">M</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-full bg-primary/10 rounded-t-lg" style="height: 60%;"></div>
+<span class="text-[10px] font-bold text-slate-400">T</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-full bg-primary/30 rounded-t-lg" style="height: 35%;"></div>
+<span class="text-[10px] font-bold text-slate-400">W</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-full bg-primary rounded-t-lg" style="height: 90%;"></div>
+<span class="text-[10px] font-bold text-slate-700">T</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-full bg-primary/10 rounded-t-lg" style="height: 55%;"></div>
+<span class="text-[10px] font-bold text-slate-400">F</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-full bg-primary/10 rounded-t-lg" style="height: 20%;"></div>
+<span class="text-[10px] font-bold text-slate-400">S</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-full bg-primary/10 rounded-t-lg" style="height: 15%;"></div>
+<span class="text-[10px] font-bold text-slate-400">S</span>
+</div>
+</div>
+</div>
+<!-- 3. AI Time Tracker -->
+<div class="col-span-1 md:col-span-6 lg:col-span-3 glass-card rounded-3xl p-6 flex flex-col items-center justify-center">
+<div class="relative flex items-center justify-center w-40 h-40">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-slate-100 dark:text-slate-800" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-dasharray="440" stroke-dashoffset="150" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-3xl font-black text-charcoal">02:35</span>
+<div class="flex gap-2 mt-2">
+<button class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-charcoal">
+<span class="material-symbols-outlined text-sm">pause</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined text-sm">stop</span>
+</button>
+</div>
+</div>
+</div>
+<p class="mt-4 text-sm font-bold text-slate-400 uppercase tracking-widest">Active compute time</p>
+</div>
+<!-- 4. Task Execution -->
+<div class="col-span-1 md:col-span-6 lg:col-span-8 glass-card rounded-3xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h4 class="text-lg font-bold text-charcoal">Task Execution Pipeline</h4>
+<span class="text-sm font-medium text-slate-500">Processing Job #8291</span>
+</div>
+<div class="flex items-center gap-2 h-12 bg-background-light dark:bg-charcoal/20 rounded-2xl p-2 neumorphic-inset">
+<div class="flex-1 h-full bg-primary/20 rounded-xl flex items-center justify-center px-4">
+<span class="text-xs font-bold text-primary">Planning</span>
+</div>
+<div class="flex-1 h-full bg-primary rounded-xl flex items-center justify-center px-4 shadow-lg shadow-primary/20">
+<span class="text-xs font-bold text-charcoal flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-charcoal rounded-full animate-ping"></span>
+                                Execution
+                            </span>
+</div>
+<div class="flex-1 h-full bg-slate-200/50 dark:bg-slate-700/50 rounded-xl flex items-center justify-center px-4">
+<span class="text-xs font-bold text-slate-400">Completed</span>
+</div>
+</div>
+<div class="mt-6 flex gap-4 overflow-x-auto pb-2">
+<div class="flex-shrink-0 bg-white/40 dark:bg-white/5 border border-primary/20 px-4 py-3 rounded-2xl flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<div>
+<p class="text-xs font-bold text-charcoal">LLM Query</p>
+<p class="text-[10px] text-slate-500">GPT-4o • 42ms</p>
+</div>
+</div>
+<div class="flex-shrink-0 bg-white/40 dark:bg-white/5 border border-primary/20 px-4 py-3 rounded-2xl flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">database</span>
+<div>
+<p class="text-xs font-bold text-charcoal">Vector Search</p>
+<p class="text-[10px] text-slate-500">Pinecone • 12ms</p>
+</div>
+</div>
+<div class="flex-shrink-0 bg-white/40 dark:bg-white/5 border border-primary/20 px-4 py-3 rounded-2xl flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">terminal</span>
+<div>
+<p class="text-xs font-bold text-charcoal">Python Hook</p>
+<p class="text-[10px] text-slate-500">Lambda • 185ms</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. System Timeline -->
+<div class="col-span-1 md:col-span-6 lg:col-span-4 glass-card rounded-3xl p-6">
+<h4 class="text-lg font-bold text-charcoal mb-4">Weekly Roadmap</h4>
+<div class="space-y-4">
+<div class="flex items-start gap-4">
+<div class="flex flex-col items-center">
+<span class="text-xs font-black text-charcoal">MON</span>
+<div class="w-0.5 h-12 bg-primary/20 my-1"></div>
+</div>
+<div class="flex-1">
+<div class="bg-primary/10 border-l-4 border-primary p-3 rounded-r-xl">
+<p class="text-xs font-bold text-charcoal">Agent Run: Health Audit</p>
+<p class="text-[10px] text-slate-500 mt-1">Scheduled: 09:00 AM</p>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="flex flex-col items-center">
+<span class="text-xs font-black text-slate-300">TUE</span>
+<div class="w-0.5 h-12 bg-primary/20 my-1"></div>
+</div>
+<div class="flex-1">
+<div class="bg-slate-100/50 dark:bg-slate-800/50 p-3 rounded-xl border border-dashed border-slate-300">
+<p class="text-xs font-bold text-slate-400">Memory Indexing</p>
+<p class="text-[10px] text-slate-500 mt-1">Auto-sync active</p>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="flex flex-col items-center">
+<span class="text-xs font-black text-slate-300">WED</span>
+</div>
+<div class="flex-1">
+<div class="bg-primary/10 border-l-4 border-primary p-3 rounded-r-xl">
+<p class="text-xs font-bold text-charcoal">Model Re-training</p>
+<p class="text-[10px] text-slate-500 mt-1">Dataset v2.4</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 6. Activity Feed -->
+<div class="col-span-1 md:col-span-3 lg:col-span-4 glass-card rounded-3xl p-6 flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h4 class="text-lg font-bold text-charcoal">Recent Activity</h4>
+<button class="text-primary text-xs font-bold hover:underline">View All</button>
+</div>
+<div class="space-y-6 flex-1">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
+<span class="material-symbols-outlined text-[20px]">monitor_heart</span>
+</div>
+<div>
+<p class="text-sm font-bold text-charcoal">Health data indexed</p>
+<p class="text-[11px] text-slate-500 font-medium">Just now • Source: Wearable API</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined text-[20px]">psychology</span>
+</div>
+<div>
+<p class="text-sm font-bold text-charcoal">Memory extracted</p>
+<p class="text-[11px] text-slate-500 font-medium">14 mins ago • Context: Meeting</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+<div>
+<p class="text-sm font-bold text-charcoal">Rate limit warning</p>
+<p class="text-[11px] text-slate-500 font-medium">1 hour ago • Anthropic API</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-charcoal">Deployment success</p>
+<p class="text-[11px] text-slate-500 font-medium">2 hours ago • Local Node</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 7. Devices -->
+<div class="col-span-1 md:col-span-3 lg:col-span-4 glass-card rounded-3xl p-6">
+<h4 class="text-lg font-bold text-charcoal mb-6">Connected Nodes</h4>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-background-light dark:bg-charcoal/30 rounded-2xl neumorphic-inset">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-charcoal">laptop_mac</span>
+<span class="text-sm font-bold">MacBook Air M1</span>
+</div>
+<span class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span>
+</div>
+<div class="flex items-center justify-between p-4 bg-background-light dark:bg-charcoal/30 rounded-2xl neumorphic-inset">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-charcoal">developer_board</span>
+<span class="text-sm font-bold">Local GPU Node</span>
+</div>
+<span class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span>
+</div>
+<div class="flex items-center justify-between p-4 bg-background-light dark:bg-charcoal/30 rounded-2xl neumorphic-inset opacity-60">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-charcoal">dns</span>
+<span class="text-sm font-bold">Remote Server</span>
+</div>
+<span class="w-2 h-2 bg-slate-300 rounded-full"></span>
+</div>
+</div>
+</div>
+<!-- 8. System Benefits / Expandable -->
+<div class="col-span-1 md:col-span-6 lg:col-span-4 glass-card rounded-3xl p-6">
+<h4 class="text-lg font-bold text-charcoal mb-4">Core Infrastructure</h4>
+<div class="space-y-2">
+<details class="group bg-white/40 dark:bg-white/5 rounded-2xl overflow-hidden" open="">
+<summary class="flex items-center justify-between p-4 cursor-pointer list-none group-open:bg-primary/10">
+<span class="text-sm font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">memory</span>
+                                    Memory Management
+                                </span>
+<span class="material-symbols-outlined text-[18px] group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-4 text-xs font-medium text-slate-500 border-t border-primary/5">
+                                High-performance cache for recent inference results and context windows.
+                            </div>
+</details>
+<details class="group bg-white/40 dark:bg-white/5 rounded-2xl overflow-hidden">
+<summary class="flex items-center justify-between p-4 cursor-pointer list-none group-open:bg-primary/10">
+<span class="text-sm font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+                                    Vector DB
+                                </span>
+<span class="material-symbols-outlined text-[18px] group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-4 text-xs font-medium text-slate-500 border-t border-primary/5">
+                                Vectorized knowledge base for RAG implementation and long-term storage.
+                            </div>
+</details>
+<details class="group bg-white/40 dark:bg-white/5 rounded-2xl overflow-hidden">
+<summary class="flex items-center justify-between p-4 cursor-pointer list-none group-open:bg-primary/10">
+<span class="text-sm font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">box</span>
+                                    Containers
+                                </span>
+<span class="material-symbols-outlined text-[18px] group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-4 text-xs font-medium text-slate-500 border-t border-primary/5">
+                                Microservice isolation for agent tools and module sandboxing.
+                            </div>
+</details>
+<details class="group bg-white/40 dark:bg-white/5 rounded-2xl overflow-hidden">
+<summary class="flex items-center justify-between p-4 cursor-pointer list-none group-open:bg-primary/10">
+<span class="text-sm font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+                                    LLM Cache
+                                </span>
+<span class="material-symbols-outlined text-[18px] group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-4 text-xs font-medium text-slate-500 border-t border-primary/5">
+                                Latency reduction through semantic caching of frequent LLM queries.
+                            </div>
+</details>
+</div>
+</div>
+</div>
+</main>
+<footer class="p-10 border-t border-primary/10 text-center">
+<p class="text-slate-400 text-sm font-medium">© 2024 Capsule Orchestration. All systems operational.</p>
+</footer>
+</div>
+</body></html>
