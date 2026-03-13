@@ -1,4 +1,5 @@
 import { IconButton } from '../ui/IconButton';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 const TABS = [
   'Dashboard', 'Agents', 'Modules', 'Tools', 'Memory',
@@ -31,6 +32,7 @@ export function Navbar() {
       </nav>
 
       <div className="flex items-center gap-3">
+        <ThemeToggle />
         <IconButton icon="settings" />
         <IconButton icon="notifications" badge />
         <div className="w-10 h-10 rounded-xl bg-primary/20 border-2 border-primary/40 overflow-hidden">
