@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+redis
+qdrant-client
+psycopg2-binary
+requests
+pydantic
