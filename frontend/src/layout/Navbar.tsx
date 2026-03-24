@@ -1,12 +1,24 @@
+import { Link, useLocation } from 'react-router-dom';
 import { IconButton } from '../ui/IconButton';
 import { ThemeToggle } from '../ui/ThemeToggle';
 
 const TABS = [
-  'Dashboard', 'Agents', 'Modules', 'Tools', 'Memory',
-  'Models', 'Users', 'Permissions', 'Logs', 'Settings'
+  { name: 'Dashboard', path: '/' },
+  { name: 'Agents', path: '/agents' },
+  { name: 'Modules', path: '/modules' },
+  { name: 'Tools', path: '/tools' },
+  { name: 'Memory', path: '/memory' },
+  { name: 'Models', path: '/models' },
+  { name: 'Users', path: '/users' },
+  { name: 'Permissions', path: '/permissions' },
+  { name: 'Logs', path: '/logs' },
+  { name: 'Settings', path: '/settings' }
 ];
 
 export function Navbar() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
       <div className="flex items-center gap-3">
@@ -17,18 +29,22 @@ export function Navbar() {
       </div>
 
       <nav className="hidden lg:flex items-center bg-white/50 dark:bg-white/5 p-1 rounded-full border border-primary/10">
-        {TABS.map((tab, idx) => (
-          <a
-            key={tab}
-            href="#"
-            className={`px-5 py-2 text-sm font-semibold rounded-full transition-colors ${idx === 0
-              ? 'bg-charcoal text-white dark:bg-primary dark:text-charcoal'
-              : 'font-medium text-slate-600 dark:text-slate-400 hover:text-primary'
+        {TABS.map((tab) => {
+          const isActive = currentPath === tab.path || (currentPath.startsWith('/agents') && tab.name === 'Agents');
+          return (
+            <Link
+              key={tab.name}
+              to={tab.path}
+              className={`px-5 py-2 text-sm font-semibold rounded-full transition-colors ${
+                isActive
+                  ? 'bg-charcoal text-white dark:bg-primary dark:text-charcoal'
+                  : 'font-medium text-slate-600 dark:text-slate-400 hover:text-primary'
               }`}
-          >
-            {tab}
-          </a>
-        ))}
+            >
+              {tab.name}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="flex items-center gap-3">
