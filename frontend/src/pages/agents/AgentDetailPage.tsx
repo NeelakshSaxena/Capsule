@@ -11,10 +11,33 @@ export const AgentDetailPage: React.FC = () => {
 
   const [promptInput, setPromptInput] = useState(agent?.system_prompt || '');
   const [consoleInput, setConsoleInput] = useState('');
-  const [logs, setLogs] = useState<{ time: string; type: string; msg: string; detail: string }[]>([
-    { time: '14:22:01', type: 'success', msg: 'Memory link established', detail: 'Vector database latency: 12ms' },
-    { time: '14:21:45', type: 'warning', msg: 'Model call initiated', detail: 'Payload: 2.4k tokens' },
-  ]);
+  const [logs, setLogs] = useState<{ time: string; type: string; msg: string; detail: string }[]>([]);
+
+  // Setup EventSource for SSE logs when agent is running
+  React.useEffect(() => {
+    if (!agent) return;
+    
+    // Connect to SSE
+    const eventSource = new EventSource(`http://localhost:8000/api/agents/${agent.id}/logs`);
+    
+    eventSource.onmessage = (event) => {
+      try {
+        const logData = JSON.parse(event.data);
+        setLogs((prev) => [logData, ...prev]);
+      } catch (err) {
+        console.error("Failed to parse SSE log:", err);
+      }
+    };
+    
+    eventSource.onerror = (err) => {
+      console.warn("SSE stream closed or errored", err);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [agent?.id]);
 
   if (!agent) {
     return <div className="p-8 mt-24">Agent not found</div>;
@@ -35,25 +58,12 @@ export const AgentDetailPage: React.FC = () => {
     
     const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second:'2-digit' });
     
-    // Add User input to log
     setLogs((prev) => [
       { time, type: 'info', msg: `User Input: ${consoleInput}`, detail: 'Triggered via Test Console' },
       ...prev,
     ]);
 
-    // Update agent state to running if not already
     if (!isRunning) startAgent(agent.id);
-
-    setTimeout(() => {
-      setLogs((prev) => [
-        { time: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second:'2-digit' }), 
-          type: 'success', 
-          msg: `Agent ${agent.name} Responded`, 
-          detail: 'Action complete. Latency: 124ms' },
-        ...prev,
-      ]);
-    }, 1500);
-
     setConsoleInput('');
   };
 

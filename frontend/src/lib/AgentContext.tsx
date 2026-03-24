@@ -74,12 +74,38 @@ export const AgentProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     );
   };
 
-  const startAgent = (id: string) => {
+  const startAgent = async (id: string) => {
+    // Optimistic UI update
     updateAgent(id, { status: 'running' });
+    
+    try {
+      const agent = getAgent(id);
+      await fetch(`http://localhost:8000/api/agents/${id}/start`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tools: agent?.tools || [],
+          memory_mode: agent?.memory.mode || 'scoped',
+          system_prompt: agent?.system_prompt || '',
+        })
+      });
+    } catch (err) {
+      console.error('Failed to start agent remotely', err);
+      updateAgent(id, { status: 'error' });
+    }
   };
 
-  const stopAgent = (id: string) => {
+  const stopAgent = async (id: string) => {
     updateAgent(id, { status: 'idle' });
+    try {
+      await fetch(`http://localhost:8000/api/agents/${id}/stop`, {
+        method: 'POST',
+      });
+    } catch (err) {
+      console.error('Failed to stop agent', err);
+    }
   };
 
   const totalExecutions = agents.reduce((acc, a) => acc + a.metrics.tasks_completed, 0);
