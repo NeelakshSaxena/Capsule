@@ -31,13 +31,36 @@ async def run_agent_loop(ctx, agent_id: str, config: dict):
         await redis.set(f"agent:{agent_id}:status", "idle")
         return {"status": "aborted"}
 
-    # 2. PLAN & LLM Brain (Hardcoded simulation for "First Real Agent" phase)
+    # 2. PLAN & LLM Brain
     await redis.publish(f"agent:{agent_id}:logs", log_msg("Planning", "Invoking LLM to determine next steps...", "info"))
     await asyncio.sleep(2)
     
-    # 3. TOOL USE (Mocked for now)
-    await redis.publish(f"agent:{agent_id}:logs", log_msg("Tool Execution", f"Evaluating accessible tools: {config.get('tools', [])}", "info"))
-    await asyncio.sleep(1.5)
+    # 3. TOOL USE
+    tools_available = config.get('tools', [])
+    await redis.publish(f"agent:{agent_id}:logs", log_msg("Tool Evaluation", f"Evaluating accessible tools: {tools_available}", "info"))
+    await asyncio.sleep(1)
+
+    from backend.services.tool_service import tool_registry
+
+    if "web_search" in tools_available:
+        await redis.publish(f"agent:{agent_id}:logs", log_msg("Tool Execution", "Running web_search for 'Latest AI news'", "info"))
+        try:
+            search_result = await tool_registry.invoke_tool("web_search", query="Latest AI news")
+            preview = search_result[:100] + "..." if len(search_result) > 100 else search_result
+            await redis.publish(f"agent:{agent_id}:logs", log_msg("Tool Success", f"web_search returned: {preview}", "success"))
+        except Exception as e:
+            await redis.publish(f"agent:{agent_id}:logs", log_msg("Tool Failed", f"web_search error: {str(e)}", "warning"))
+        await asyncio.sleep(1)
+
+    if "agent_call" in tools_available:
+        await redis.publish(f"agent:{agent_id}:logs", log_msg("Tool Execution", "Delegating subtask via agent_call", "info"))
+        try:
+            sub_agent_new_id = f"sub-{agent_id[-4:]}"
+            delegation_result = await tool_registry.invoke_tool("agent_call", agent_id=sub_agent_new_id, task="Analyze search results.")
+            await redis.publish(f"agent:{agent_id}:logs", log_msg("Tool Success", delegation_result, "success"))
+        except Exception as e:
+            await redis.publish(f"agent:{agent_id}:logs", log_msg("Tool Failed", f"agent_call error: {str(e)}", "warning"))
+        await asyncio.sleep(1)
 
     stop_signal = await redis.get(f"agent:{agent_id}:stop")
     if stop_signal == b"1":
