@@ -17,7 +17,18 @@ export const AgentDetailPage: React.FC = () => {
   React.useEffect(() => {
     if (!agent) return;
     
-    // Connect to SSE
+    // Fetch log history first for navigation persistence
+    fetch(`http://localhost:8000/api/agents/${agent.id}/logs_history`)
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          // data is oldest to newest, state expects newest first (index 0)
+          setLogs(data.reverse());
+        }
+      })
+      .catch((err) => console.error("Failed to fetch log history:", err));
+
+    // Connect to SSE for Live Logs
     const eventSource = new EventSource(`http://localhost:8000/api/agents/${agent.id}/logs`);
     
     eventSource.onmessage = (event) => {

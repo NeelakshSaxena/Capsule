@@ -3,11 +3,37 @@ import json
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from backend.services.agent_service import agent_service
+from backend.database.agent_db import get_all_agents, save_agent
 
 router = APIRouter(prefix="/api/agents", tags=["Agents"])
+
+@router.get("")
+async def fetch_agents():
+    try:
+        return await get_all_agents()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/{agent_id}")
+async def update_agent_config(agent_id: str, updates: Dict[str, Any]):
+    try:
+        return await save_agent(agent_id, updates)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/{agent_id}/logs_history")
+async def get_logs_history(agent_id: str):
+    try:
+        redis = await agent_service.get_redis()
+        # Fetch all logs in the list
+        logs_bytes = await redis.lrange(f"agent:{agent_id}:log_history", 0, -1)
+        import json
+        return [json.loads(log) for log in logs_bytes]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 class AgentStartConfig(BaseModel):
     tools: List[str] = []
