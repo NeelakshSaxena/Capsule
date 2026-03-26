@@ -7,3 +7,4 @@ requests
 pydantic
 arq
 ollama
+python-multipart
