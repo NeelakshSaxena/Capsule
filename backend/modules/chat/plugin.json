@@ -1,0 +1,25 @@
+{
+  "id": "chat-module",
+  "name": "Live Chat",
+  "version": "1.0.0",
+  "description": "Seamless live chat integration with real-time websocket connections.",
+  "icon": "💬",
+  "permissions": ["websocket_access", "read_history"],
+  "settings_schema": {
+    "welcome_message": {
+      "type": "string",
+      "default": "Hello! How can I help you today?",
+      "description": "The first message users see"
+    },
+    "enable_bot": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable automated responses when idle"
+    },
+    "timeout_minutes": {
+      "type": "number",
+      "default": 15,
+      "description": "Idle timeout before chat is closed"
+    }
+  }
+}

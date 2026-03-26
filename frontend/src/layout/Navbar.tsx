@@ -30,7 +30,9 @@ export function Navbar() {
 
       <nav className="hidden lg:flex items-center bg-white/50 dark:bg-white/5 p-1 rounded-full border border-primary/10">
         {TABS.map((tab) => {
-          const isActive = currentPath === tab.path || (currentPath.startsWith('/agents') && tab.name === 'Agents');
+          const isActive = currentPath === tab.path || 
+            (currentPath.startsWith('/agents') && tab.name === 'Agents') ||
+            (currentPath.startsWith('/modules') && tab.name === 'Modules');
           return (
             <Link
               key={tab.name}

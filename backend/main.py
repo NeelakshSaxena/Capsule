@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.api import agent_routes
+from backend.api import agent_routes, module_routes
 
 app = FastAPI(title="Capsule AI OS")
 
@@ -14,6 +14,7 @@ app.add_middleware(
 )
 
 app.include_router(agent_routes.router)
+app.include_router(module_routes.router)
 
 @app.get("/")
 def read_root():
